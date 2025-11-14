@@ -11,6 +11,8 @@
 #include <PDFPage.h>
 #include <AbstractContentContext.h>
 #include <PageContentContext.h>
+#include <litehtml.h>
+#include "Font.h"
 class PDF
 {
 public:
@@ -18,7 +20,8 @@ public:
 	~PDF();
 	void start();
 	void finish();
-	void createFont(const std::string& fontName, const long& fontSize);
+	Font* createFont(const std::string& fontName, const long& fontSize);
+	void drawText(const std::string& text,const litehtml::web_color& color, const litehtml::position& pos,Font* font);
 public:
 	/// <summary>
 	/// A4 纸张尺寸，宽度：595 点 ≈ 210 mm，
@@ -36,10 +39,10 @@ public:
 	int viewWidth{ width - edge * 2 };
 
 	int viewHeight{ height - edge * 2 };
-
-	PDFUsedFont* font;
-	long fontSize;
 private:
+	PageContentContext* getContext(const double& y);
+private:
+	std::vector<Font> fonts;
 	PDFWriter pdfWriter;
 	std::vector<PDFPage*> pages;
 	std::vector<PageContentContext*> pageContexts;

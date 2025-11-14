@@ -2,6 +2,7 @@
 #include <iostream>
 #include "DocumentContainer.h"
 #include "PDF.h"
+#include "Font.h"
 
 DocumentContainer::DocumentContainer(PDF* pdf) :pdf{pdf}
 {
@@ -13,7 +14,7 @@ DocumentContainer::~DocumentContainer() noexcept
 
 litehtml::uint_ptr DocumentContainer::create_font(const litehtml::font_description& descr, const litehtml::document* doc, litehtml::font_metrics* fm)
 {
-	pdf->createFont(descr.family, (long)descr.size);
+	auto ptr = pdf->createFont(descr.family, (long)descr.size);
 	//感觉没啥用
 	fm->font_size = descr.size;
 	fm->ascent = descr.size * 0.8;
@@ -22,7 +23,7 @@ litehtml::uint_ptr DocumentContainer::create_font(const litehtml::font_descripti
 	fm->draw_spaces = (descr.decoration_line != litehtml::text_decoration_line_none);
 	fm->sub_shift = descr.size / 5;
 	fm->super_shift = descr.size / 3;
-	return (litehtml::uint_ptr)pdf;
+	return (litehtml::uint_ptr)ptr;
 }
 
 void DocumentContainer::delete_font(litehtml::uint_ptr hFont)
@@ -33,18 +34,15 @@ void DocumentContainer::delete_font(litehtml::uint_ptr hFont)
 litehtml::pixel_t DocumentContainer::text_width(const char* text, litehtml::uint_ptr hFont)
 {
 	auto str = std::string(text);
-	PDFUsedFont::TextMeasures textDimensions = pdf->font->CalculateTextDimensions(str, pdf->fontSize);
-	return textDimensions.width;
+	auto font = (Font*)hFont;
+	PDFUsedFont::TextMeasures textDimensions = font->font->CalculateTextDimensions(str, font->size);
+	return (litehtml::pixel_t)textDimensions.width;
 }
 
 void DocumentContainer::draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos)
 {
-	//auto str = std::string(text);
-	//PDFUsedFont::TextMeasures textDimensions = pdf->font->CalculateTextDimensions(str, 13);
-	//AbstractContentContext::TextOptions textOptions(pdf->font, 13, AbstractContentContext::eRGB, 0);
-	//pageContexts[0]->WriteText(32+pos.x, 842-32-pos.y+textDimensions.yMax, str, textOptions);
-
-	//int a = 1;
+	auto str = std::string(text);
+	pdf->drawText(str, color, pos,(Font*)hFont);
 }
 
 litehtml::pixel_t DocumentContainer::pt_to_px(float pt) const

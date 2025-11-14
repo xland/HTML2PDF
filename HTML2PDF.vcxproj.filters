@@ -24,6 +24,9 @@
     <ClCompile Include="PDF.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="demo2.html" />
@@ -37,6 +40,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="PDF.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
