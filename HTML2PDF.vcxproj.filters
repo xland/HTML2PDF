@@ -21,6 +21,9 @@
     <ClCompile Include="DocumentContainer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PDF.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="demo2.html" />
@@ -31,6 +34,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DocumentContainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PDF.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

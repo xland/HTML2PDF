@@ -1,9 +1,11 @@
 ﻿#include <iostream>
+#include <sstream>
+#include <fstream>
 #include <string>
 #include <litehtml/document.h>
-#include <podofo/podofo.h>
 #include <Windows.h>
 #include "DocumentContainer.h"
+#include "PDF.h"
 
 
 
@@ -18,23 +20,16 @@ int wmain(int argc, wchar_t* argv[])
         std::wcout << L"参数 " << i << L": " << argv[i] << std::endl;
     }
 
+	auto pdf = std::make_unique<PDF>();
+	pdf->start();
 
-    std::stringstream ss;
-    std::ifstream("demo2.html", std::ios::binary) >> ss.rdbuf();
-    auto html = ss.str();
-    auto docContainer = new  DocumentContainer();
-    auto doc = litehtml::document::createFromString(html, docContainer);
-    int best_width = doc->render(1240);
-    litehtml::position clip(0, 0, 1240, 1755);
-    doc->draw((litehtml::uint_ptr)nullptr, 0, 0, &clip);
-    docContainer->finish();
+
     //794 96dpi
     //1240 150dpi
     //2480 300dpi
     //int best_width = doc->render(1240);
     //doc->render(best_width);
     //doc->render(1240);
-
     //HelloWorld("allen.pdf");
 
 

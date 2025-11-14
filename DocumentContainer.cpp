@@ -1,47 +1,28 @@
 ﻿#include <format>
 #include <iostream>
 #include "DocumentContainer.h"
+#include "PDF.h"
 
-DocumentContainer::DocumentContainer()
+DocumentContainer::DocumentContainer(PDF* pdf) :pdf{pdf}
 {
-	auto& _page = document.GetPages().CreatePage(PoDoFo::PdfPageSize::A4);
-	painter.SetCanvas(_page);
-	page = &_page;
 }
 
 DocumentContainer::~DocumentContainer() noexcept
 {
 }
 
-void DocumentContainer::finish()
-{
-	painter.FinishDrawing();
-
-	// Set some additional information on the PDF file.
-	document.GetMetadata().SetCreator(PoDoFo::PdfString("HTML2PDF"));
-	document.GetMetadata().SetAuthor(PoDoFo::PdfString("HTML2PDF"));
-	document.GetMetadata().SetTitle(PoDoFo::PdfString("HTML2PDF"));
-	document.GetMetadata().SetSubject(PoDoFo::PdfString("HTML2PDF"));
-	document.GetMetadata().SetKeywords(vector<string>({ "HTML2PDF" }));
-
-	// The last step is to close the document.
-	document.Save("allen.pdf");
-}
-
 litehtml::uint_ptr DocumentContainer::create_font(const litehtml::font_description& descr, const litehtml::document* doc, litehtml::font_metrics* fm)
 {
-	auto fontPath = std::format("C:\\Windows\\Fonts\\{}.ttf", descr.family);
-	auto& f = document.GetFonts().GetOrCreateFont(fontPath);
-	auto& metrics = f.GetMetrics();
+	pdf->createFont(descr.family, (long)descr.size);
+	//感觉没啥用
 	fm->font_size = descr.size;
-	fm->ascent = metrics.GetAscent();
-	fm->descent = metrics.GetDescent();
-	fm->height = metrics.GetCapHeight();
+	fm->ascent = descr.size * 0.8;
+	fm->descent = descr.size * 0.2;
+	fm->height = descr.size * 1.2;
 	fm->draw_spaces = (descr.decoration_line != litehtml::text_decoration_line_none);
 	fm->sub_shift = descr.size / 5;
 	fm->super_shift = descr.size / 3;
-	painter.TextState.SetFont(f, descr.size);
-    return (litehtml::uint_ptr)&f;
+	return (litehtml::uint_ptr)pdf;
 }
 
 void DocumentContainer::delete_font(litehtml::uint_ptr hFont)
@@ -49,29 +30,29 @@ void DocumentContainer::delete_font(litehtml::uint_ptr hFont)
 
 }
 
-pixel_t DocumentContainer::text_width(const char* text, litehtml::uint_ptr hFont)
+litehtml::pixel_t DocumentContainer::text_width(const char* text, litehtml::uint_ptr hFont)
 {
-	auto f = (PoDoFo::PdfFont*)hFont;
 	auto str = std::string(text);
-	std::cout <<  str << "' (length: " << str.length() << ")" << std::endl;
-	auto w = f->GetStringLength(str, painter.TextState);
-    return static_cast<pixel_t>(w * 1.333f); //w*4.166
+	PDFUsedFont::TextMeasures textDimensions = pdf->font->CalculateTextDimensions(str, pdf->fontSize);
+	return textDimensions.width;
 }
 
 void DocumentContainer::draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos)
 {
-	auto str = std::string(text);
-	std::cout << str << std::endl;
-	painter.DrawText("222", 56.69, page->GetRect().Height - 56.69);
-	int a = 1;
+	//auto str = std::string(text);
+	//PDFUsedFont::TextMeasures textDimensions = pdf->font->CalculateTextDimensions(str, 13);
+	//AbstractContentContext::TextOptions textOptions(pdf->font, 13, AbstractContentContext::eRGB, 0);
+	//pageContexts[0]->WriteText(32+pos.x, 842-32-pos.y+textDimensions.yMax, str, textOptions);
+
+	//int a = 1;
 }
 
-pixel_t DocumentContainer::pt_to_px(float pt) const
+litehtml::pixel_t DocumentContainer::pt_to_px(float pt) const
 {
-	return static_cast<pixel_t>(pt * 1.333f);
+	return static_cast<litehtml::pixel_t>(pt * 1.333f);
 }
 
-pixel_t DocumentContainer::get_default_font_size() const
+litehtml::pixel_t DocumentContainer::get_default_font_size() const
 {
     return 13.f;
 }
@@ -93,23 +74,23 @@ void DocumentContainer::get_image_size(const char* src, const char* baseurl, lit
 {
 }
 
-void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const background_layer& layer, const std::string& url, const std::string& base_url)
+void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const std::string& url, const std::string& base_url)
 {
 }
 
-void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const background_layer& layer, const web_color& color)
+void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::web_color& color)
 {
 }
 
-void DocumentContainer::draw_linear_gradient(litehtml::uint_ptr hdc, const background_layer& layer, const background_layer::linear_gradient& gradient)
+void DocumentContainer::draw_linear_gradient(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::background_layer::linear_gradient& gradient)
 {
 }
 
-void DocumentContainer::draw_radial_gradient(litehtml::uint_ptr hdc, const background_layer& layer, const background_layer::radial_gradient& gradient)
+void DocumentContainer::draw_radial_gradient(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::background_layer::radial_gradient& gradient)
 {
 }
 
-void DocumentContainer::draw_conic_gradient(litehtml::uint_ptr hdc, const background_layer& layer, const background_layer::conic_gradient& gradient)
+void DocumentContainer::draw_conic_gradient(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::background_layer::conic_gradient& gradient)
 {
 }
 
@@ -159,8 +140,8 @@ void DocumentContainer::del_clip()
 
 void DocumentContainer::get_viewport(litehtml::position& viewport) const
 {
-	viewport.width = 1240;
-	viewport.height = 1755;
+	viewport.width = pdf->viewWidth;
+	viewport.height = pdf->viewHeight;
 	viewport.x = 0;
 	viewport.y = 0;
 }
@@ -173,10 +154,10 @@ litehtml::element::ptr DocumentContainer::create_element(const char* tag_name, c
 void DocumentContainer::get_media_features(litehtml::media_features& media) const
 {
 	media.type = litehtml::media_type_screen;
-	media.width = 1240;
-	media.height = 1755;
-	media.device_width = 1240;
-	media.device_height = 1755;
+	media.width = pdf->viewWidth;
+	media.height = pdf->viewHeight;
+	media.device_width = pdf->viewWidth;
+	media.device_height = pdf->viewHeight;
 	media.color = 8;
 	media.monochrome = 0;
 	media.color_index = 256;
