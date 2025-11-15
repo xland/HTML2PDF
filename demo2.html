@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-    <div style="margin:0px;padding:0px;">测试边距-ABCDEFGHIJKLMNOPQRSTUVWXYZ-abcdefghigklmnopqrstuvwxyz</div>
+    <div style="margin:0px;padding:0px;height:22px;overflow:hidden;word-break:break-all;">测试页面边距及裁剪区域 overflow:hidden  ABCDEFGHIJKLMNOPQRSTUVWXYZ  abcdefghigklmnopqrstuvwxyz  ABCDEFGHIJKLMNOPQRSTUVWXYZ  abcdefghigklmnopqrstuvwxyz  ABCDEFGHIJKLMNOPQRSTUVWXYZ  abcdefghigklmnopqrstuvwxyz</div>
     <h1>标题1 H1</h1>
     <h2>标题2 H2</h2>
     <h3>标题3 H3</h3>
@@ -18,15 +18,41 @@
     <h5>标题5 H5</h5>
     <h6>标题6 H6</h6>
     <div style="text-align:center;color:red">居中对齐，红色文本</div>
-    <div style="text-align:right;color:blue">右对齐、蓝色文本</div>
-    <ul style="margin:0px;">
+    <div style="display:flex;">
+        <div style="flex: 1; color: green;background-color:yellow;">flex box 黄底绿字</div>
+        <div style="flex: 1; text-align: right; color: blue; background-color:red; ">flex box 红底蓝字</div>
+    </div>
+    <ul>
         <li>列表1</li>
         <li>列表2</li>
-        <li>111</li>
-        <li>222</li>
-        <li>aaa</li>
-        <li>bbb</li>
+        <li>列表3
+            <ul>
+                <li>
+                    二级列表1
+                </li>
+                <li>
+                    二级列表2
+                </li>
+            </ul>
+        </li>
+        <li>列表4</li>
+        <li>列表5</li>
+        <li>列表6</li>
     </ul>
-    <div style="height:120px;background:#ffd800"></div>
+    <p style="background: #ffd800; white-space: pre-line;line-height:28px;font-size:12px;text-align:center;">
+        <span style="color:red">测试带背景颜色的文本段落</span>
+        破阵子·为陈同甫赋壮词以寄之
+        辛弃疾
+        醉里挑灯看剑，
+        梦回吹角连营。
+        八百里分麾下炙，
+        五十弦翻塞外声，
+        沙场秋点兵。
+        马作的卢飞快，
+        弓如霹雳弦惊。
+        了却君王天下事，
+        赢得生前身后名。
+        可怜白发生！
+    </p>
 </body>
 </html>

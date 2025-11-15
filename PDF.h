@@ -36,11 +36,13 @@ public:
 	/// <summary>
 	/// 纸张边距
 	/// </summary>
-	int edge{ 28 };
+	int edge{ 26 };
 
 	int viewWidth{ width - edge * 2 };
 
 	int viewHeight{ height - edge * 2 };
+
+	float clipX, clipY, clipW, clipH;
 private:
 	int getContextIndex(const double& y);
 private:

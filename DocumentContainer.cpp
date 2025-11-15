@@ -59,7 +59,7 @@ litehtml::pixel_t DocumentContainer::text_width(const char* text, litehtml::uint
 		return textDimensions.width + 8.f;
 	}
 	PDFUsedFont::TextMeasures textDimensions = font->font->CalculateTextDimensions(str, font->size);
-	return textDimensions.width+1.2f;//加字符间距
+	return textDimensions.width+1.6f;//加字符间距
 }
 
 void DocumentContainer::draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos)
@@ -156,10 +156,18 @@ void DocumentContainer::import_css(litehtml::string& text, const litehtml::strin
 
 void DocumentContainer::set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius)
 {
+	pdf->clipX = pos.x;
+	pdf->clipY = pos.y;
+	pdf->clipW = pos.width;
+	pdf->clipH = pos.height;
 }
 
 void DocumentContainer::del_clip()
 {
+	pdf->clipX = 999999;
+	pdf->clipY = 999999;
+	pdf->clipW = 999999;
+	pdf->clipH = 999999;
 }
 
 void DocumentContainer::get_viewport(litehtml::position& viewport) const
