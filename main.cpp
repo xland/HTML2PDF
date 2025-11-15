@@ -22,7 +22,7 @@ int wmain(int argc, wchar_t* argv[])
 
 	auto pdf = std::make_unique<PDF>();
 	pdf->start();
-
+	pdf->finish();
 
     //794 96dpi
     //1240 150dpi

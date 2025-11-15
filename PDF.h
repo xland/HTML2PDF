@@ -20,8 +20,10 @@ public:
 	~PDF();
 	void start();
 	void finish();
-	Font* createFont(const std::string& fontName, const long& fontSize);
+	Font* createFont(const litehtml::font_description& descr);
 	void drawText(const std::string& text,const litehtml::web_color& color, const litehtml::position& pos,Font* font);
+	void drawListMarker(const litehtml::list_marker& marker);
+	void drawSolidFill(const litehtml::background_layer& layer, const litehtml::web_color& color);
 public:
 	/// <summary>
 	/// A4 纸张尺寸，宽度：595 点 ≈ 210 mm，
@@ -34,15 +36,15 @@ public:
 	/// <summary>
 	/// 纸张边距
 	/// </summary>
-	int edge{ 36 };
+	int edge{ 28 };
 
 	int viewWidth{ width - edge * 2 };
 
 	int viewHeight{ height - edge * 2 };
 private:
-	PageContentContext* getContext(const double& y);
+	int getContextIndex(const double& y);
 private:
-	std::vector<Font> fonts;
+	std::vector<Font*> fonts;
 	PDFWriter pdfWriter;
 	std::vector<PDFPage*> pages;
 	std::vector<PageContentContext*> pageContexts;

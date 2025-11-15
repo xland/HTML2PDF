@@ -11,6 +11,8 @@ public:
 	PDFUsedFont* font;
 	long size;
 	std::string name;
+	int weight;
+	float half;
 private:
 
 };
