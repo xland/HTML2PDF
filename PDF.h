@@ -9,10 +9,11 @@
 #include <PDFWriter.h>
 #include <PDFUsedFont.h>
 #include <PDFPage.h>
-#include <AbstractContentContext.h>
 #include <PageContentContext.h>
 #include <litehtml.h>
 #include "Font.h"
+
+class Action;
 class PDF
 {
 public:
@@ -20,10 +21,6 @@ public:
 	~PDF();
 	void start();
 	void finish();
-	Font* createFont(const litehtml::font_description& descr);
-	void drawText(const std::string& text,const litehtml::web_color& color, const litehtml::position& pos,Font* font);
-	void drawListMarker(const litehtml::list_marker& marker);
-	void drawSolidFill(const litehtml::background_layer& layer, const litehtml::web_color& color);
 public:
 	/// <summary>
 	/// A4 纸张尺寸，宽度：595 点 ≈ 210 mm，
@@ -43,12 +40,9 @@ public:
 	int viewHeight{ height - edge * 2 };
 
 	float clipX, clipY, clipW, clipH;
-private:
-	int getContextIndex(const double& y);
-private:
-	std::vector<Font*> fonts;
 	PDFWriter pdfWriter;
-	std::vector<PDFPage*> pages;
-	std::vector<PageContentContext*> pageContexts;
+	std::vector<Action*> actions;
+private:
+private:
 };
 

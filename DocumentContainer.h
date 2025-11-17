@@ -45,5 +45,6 @@ public:
 	virtual litehtml::string	resolve_color(const litehtml::string& /*color*/) const { return litehtml::string(); }
 private:
 	PDF* pdf;
+	long long clipX{ INT_MAX }, clipY{ INT_MAX }, clipW{ INT_MAX }, clipH{ INT_MAX };
 };
 

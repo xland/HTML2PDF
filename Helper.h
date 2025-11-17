@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #ifdef DEBUG
 #define LOG(...) \
     do { \

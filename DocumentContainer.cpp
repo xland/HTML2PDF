@@ -1,8 +1,13 @@
 ﻿#include <format>
+#include "Helper.h"
 #include "DocumentContainer.h"
 #include "PDF.h"
 #include "Font.h"
-#include "Helper.h"
+
+#include "ActionText.h"
+#include "ActionBg.h"
+#include "ActionListDot.h"
+#include "ActionBorder.h"
 
 DocumentContainer::DocumentContainer(PDF* pdf) :pdf{pdf}
 {
@@ -22,13 +27,16 @@ litehtml::uint_ptr DocumentContainer::create_font(const litehtml::font_descripti
 	fm->draw_spaces = (descr.decoration_line != litehtml::text_decoration_line_none);
 	fm->sub_shift = descr.size / 5;
 	fm->super_shift = descr.size / 3;
-	auto ptr = pdf->createFont(descr);
+	auto fontPath = std::format("C:\\Windows\\Fonts\\{}.ttc", descr.family);
+	auto font = pdf->pdfWriter.GetFontForFile(fontPath);
+	auto ptr = new Font(font,descr);
 	return (litehtml::uint_ptr)ptr;
 }
 
 void DocumentContainer::delete_font(litehtml::uint_ptr hFont)
 {
-
+	//auto font = (Font*)hFont;
+	//delete font;
 }
 
 bool isChinesePunctuation(const std::string& s)
@@ -64,8 +72,16 @@ litehtml::pixel_t DocumentContainer::text_width(const char* text, litehtml::uint
 
 void DocumentContainer::draw_text(litehtml::uint_ptr hdc, const char* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos)
 {
-	auto str = std::string(text);
-	pdf->drawText(str, color, pos,(Font*)hFont);
+	auto font = (Font*)hFont;
+	if (pos.y + font->size > clipY + clipH || pos.x > clipX + clipW) return;
+
+	auto action = new ActionText(std::string(text),(Font*)hFont);
+	action->color = (color.red << 16) | (color.green << 8) | (color.blue);
+	action->pageIndex = (long)pos.y / pdf->viewHeight;
+	action->x = pdf->edge + pos.x;
+	auto y = pos.y - pdf->viewHeight * action->pageIndex;
+	action->y = pdf->edge + (pdf->viewHeight - y) - font->size;
+	pdf->actions.push_back(action);
 }
 
 litehtml::pixel_t DocumentContainer::pt_to_px(float pt) const
@@ -86,7 +102,18 @@ const char* DocumentContainer::get_default_font_name() const
 
 void DocumentContainer::draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker)
 {
-	pdf->drawListMarker(marker);
+	//pdf->drawListMarker(marker);
+	if (marker.marker_type == litehtml::list_style_type_none) return;
+	if (marker.pos.y > clipY + clipH || marker.pos.x > clipX + clipW) return;
+	auto action = new ActionListDot();
+	action->dotType = marker.marker_type;
+	action->size = marker.pos.height/2;
+	action->color = (marker.color.red << 16) | (marker.color.green << 8) | (marker.color.blue);
+	action->pageIndex = (long)marker.pos.y / pdf->viewHeight;
+	action->x = pdf->edge + marker.pos.x;
+	auto font = (Font*)marker.font;
+	action->y = pdf->height - pdf->edge - (marker.pos.y - action->pageIndex * pdf->viewHeight) + marker.pos.height - font->size * 2 / 3;
+	pdf->actions.push_back(action);
 }
 
 void DocumentContainer::load_image(const char* src, const char* baseurl, bool redraw_on_ready)
@@ -103,7 +130,52 @@ void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const litehtml::backg
 
 void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::web_color& color)
 {
-	pdf->drawSolidFill(layer, color);
+	if (layer.border_box.y > clipY + clipH || layer.border_box.x > clipX + clipW) return;
+	auto x = pdf->edge + layer.border_box.x;
+	if (x < clipX && clipX != INT_MAX) x = clipX;
+	auto ySrc = layer.border_box.y;
+	if (ySrc < clipY && clipY != INT_MAX) ySrc = clipY;
+	auto hSrc = layer.border_box.height;
+	if (hSrc > clipH && clipH != INT_MAX) hSrc = clipH;
+	auto w = layer.border_box.width;
+	if (w > clipW && clipW != INT_MAX) w = clipW;
+	auto pageIndex = (long)ySrc / pdf->viewHeight;
+	unsigned long colorVal = (color.red << 16) | (color.green << 8) | (color.blue);
+	auto flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	if (!flag) {
+		auto action = new ActionBg();
+		action->pageIndex = pageIndex;
+		action->color = colorVal;
+		action->w = w;
+		action->x = x;
+		action->h = hSrc;
+		action->y = pdf->edge + (pdf->viewHeight - ySrc - hSrc);
+		pdf->actions.push_back(action);
+		return;
+	}
+
+	while (flag) {
+		auto action = new ActionBg();
+		action->pageIndex = pageIndex;
+		action->color = colorVal;
+		action->w = w;
+		action->x = x;
+		action->h = (pageIndex + 1) * pdf->viewHeight - ySrc;
+		action->y = pdf->edge;
+		pdf->actions.push_back(action);
+		hSrc = hSrc - action->h;
+		ySrc = ySrc + action->h;
+		pageIndex = (long)ySrc / pdf->viewHeight;
+		flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	}
+	auto action = new ActionBg();
+	action->pageIndex = pageIndex;
+	action->color = colorVal;
+	action->w = w;
+	action->x = x;
+	action->h = hSrc;
+	action->y = pdf->edge + (pdf->viewHeight - hSrc);
+	pdf->actions.push_back(action);
 }
 
 void DocumentContainer::draw_linear_gradient(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::background_layer::linear_gradient& gradient)
@@ -156,18 +228,18 @@ void DocumentContainer::import_css(litehtml::string& text, const litehtml::strin
 
 void DocumentContainer::set_clip(const litehtml::position& pos, const litehtml::border_radiuses& bdr_radius)
 {
-	pdf->clipX = pos.x;
-	pdf->clipY = pos.y;
-	pdf->clipW = pos.width;
-	pdf->clipH = pos.height;
+	clipX = pos.x;
+	clipY = pos.y;
+	clipW = pos.width;
+	clipH = pos.height;
 }
 
 void DocumentContainer::del_clip()
 {
-	pdf->clipX = 999999;
-	pdf->clipY = 999999;
-	pdf->clipW = 999999;
-	pdf->clipH = 999999;
+	clipX = INT_MAX;
+	clipY = INT_MAX;
+	clipW = INT_MAX;
+	clipH = INT_MAX;
 }
 
 void DocumentContainer::get_viewport(litehtml::position& viewport) const

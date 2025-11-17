@@ -142,6 +142,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Action.cpp" />
+    <ClCompile Include="ActionBg.cpp" />
+    <ClCompile Include="ActionBorder.cpp" />
+    <ClCompile Include="ActionListDot.cpp" />
+    <ClCompile Include="ActionText.cpp" />
     <ClCompile Include="DocumentContainer.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="main.cpp" />
@@ -151,10 +156,16 @@
     <None Include=".gitignore" />
     <None Include="demo1.html" />
     <None Include="demo2.html" />
+    <None Include="demo3.html" />
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionBg.h" />
+    <ClInclude Include="ActionBorder.h" />
+    <ClInclude Include="ActionListDot.h" />
+    <ClInclude Include="ActionText.h" />
     <ClInclude Include="DocumentContainer.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Helper.h" />

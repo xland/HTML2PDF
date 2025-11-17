@@ -27,6 +27,21 @@
     <ClCompile Include="Font.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionText.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionBg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionBorder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionListDot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="demo2.html" />
@@ -34,6 +49,7 @@
     <None Include="README.md" />
     <None Include="LICENSE" />
     <None Include=".gitignore" />
+    <None Include="demo3.html" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DocumentContainer.h">
@@ -46,6 +62,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Helper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionText.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionBg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionBorder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionListDot.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
