@@ -1,5 +1,6 @@
 #pragma once
 #include "Action.h"
+class Font;
 class ActionListDot : public Action
 {
 public:
@@ -9,6 +10,8 @@ public:
 public:
 	int dotType;
 	float size;
+	int index;
+	Font* font;
 private:
 };
 

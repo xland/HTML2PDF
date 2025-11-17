@@ -113,13 +113,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>D:\project\litehtml\include;D:\sdk\PDF-Writer\PDFWriter;D:\sdk\PDF-Writer\FreeType\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\sdk\litehtml\include;D:\sdk\PDF-Writer\PDFWriter;D:\sdk\PDF-Writer\FreeType\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\project\litehtml\build\$(Configuration)\litehtml.lib;D:\project\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\debug\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/debug/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\sdk\litehtml\build\$(Configuration)\litehtml.lib;D:\sdk\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\debug\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/debug/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,13 +132,13 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>D:\project\litehtml\include;D:\sdk\PDF-Writer\PDFWriter;D:\sdk\PDF-Writer\FreeType\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\sdk\litehtml\include;D:\sdk\PDF-Writer\PDFWriter;D:\sdk\PDF-Writer\FreeType\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\project\litehtml\build\$(Configuration)\litehtml.lib;D:\project\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\sdk\litehtml\build\$(Configuration)\litehtml.lib;D:\sdk\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

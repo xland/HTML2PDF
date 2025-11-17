@@ -27,10 +27,13 @@ void PDF::start()
 
 	std::vector<Action*> temp;
 	auto pageIndex{ 0 };
-	do {
-		temp.clear();
-		std::copy_if(actions.begin(), actions.end(), std::back_inserter(temp),
-			[&pageIndex](Action* a) {return a->pageIndex == pageIndex; });
+	std::copy_if(actions.begin(), actions.end(), std::back_inserter(temp),
+		[&pageIndex](Action* a) {return a->pageIndex == pageIndex; });
+	if (temp.empty()) {
+		LOG("没有发现需要写入PDF的元素");
+		return;
+	}
+	while (!temp.empty()) {
 		PDFPage* page = new PDFPage();
 		page->SetMediaBox(PDFRectangle(0, 0, width, height)); //A4 纸张尺寸,宽度：595 点 ≈ 210 mm，高度：842 点 ≈ 297 mm
 		PageContentContext* ctx = pdfWriter.StartPageContentContext(page);
@@ -41,7 +44,10 @@ void PDF::start()
 		pdfWriter.EndPageContentContext(ctx);
 		pdfWriter.WritePageAndRelease(page);
 		pageIndex += 1;
-	} while (!temp.empty());
+		temp.clear();
+		std::copy_if(actions.begin(), actions.end(), std::back_inserter(temp),
+			[&pageIndex](Action* a) {return a->pageIndex == pageIndex; });
+	}
 }
 
 void PDF::finish()

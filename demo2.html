@@ -17,16 +17,16 @@
     <h4>标题4 H4</h4>
     <h5>标题5 H5</h5>
     <h6>标题6 H6</h6>
-    <div style="text-align:center;color:red">居中对齐，红色文本</div>
-    <div style="display:flex;">
+    <div style="text-align: center; color: red; border: 1px solid #886622;box-sizing:border-box;">居中对齐，红色文本</div>
+    <div style="display:flex;margin-top:2px;">
         <div style="flex: 1; color: green;background-color:yellow;">flex box 黄底绿字</div>
         <div style="flex: 1; text-align: right; color: blue; background-color:red; ">flex box 红底蓝字</div>
     </div>
     <ul>
         <li>列表1</li>
-        <li>列表2</li>
-        <li>列表3
-            <ul>
+        <li>
+            列表2
+            <ul style="list-style-type:circle;">
                 <li>
                     二级列表1
                 </li>
@@ -35,8 +35,31 @@
                 </li>
             </ul>
         </li>
-        <li>列表4</li>
-        <li>列表5</li>
+        <li>
+            列表3
+            <ul style="list-style-type:square">
+                <li>
+                    二级列表1
+                </li>
+                <li>
+                    二级列表2
+                </li>
+            </ul>
+        </li>
+        <li>
+            列表4
+            <ul style="list-style-type:decimal">
+                <li>
+                    二级列表1
+                </li>
+                <li>
+                    二级列表2
+                </li>
+            </ul>
+        </li>
+        <li>
+            列表5
+        </li>
         <li>列表6</li>
     </ul>
     <p style="background: #ffd800; white-space: pre-line; line-height: 28px; font-size: 12px; text-align: center;">

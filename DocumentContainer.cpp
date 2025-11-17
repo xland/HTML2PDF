@@ -27,7 +27,8 @@ litehtml::uint_ptr DocumentContainer::create_font(const litehtml::font_descripti
 	fm->draw_spaces = (descr.decoration_line != litehtml::text_decoration_line_none);
 	fm->sub_shift = descr.size / 5;
 	fm->super_shift = descr.size / 3;
-	auto fontPath = std::format("C:\\Windows\\Fonts\\{}.ttc", descr.family);
+	//auto fontPath = std::format("C:\\Windows\\Fonts\\{}.ttc", descr.family);
+	auto fontPath = std::format("C:\\Windows\\Fonts\\{}.ttc", "msyh");
 	auto font = pdf->pdfWriter.GetFontForFile(fontPath);
 	auto ptr = new Font(font,descr);
 	return (litehtml::uint_ptr)ptr;
@@ -74,10 +75,9 @@ void DocumentContainer::draw_text(litehtml::uint_ptr hdc, const char* text, lite
 {
 	auto font = (Font*)hFont;
 	if (pos.y + font->size > clipY + clipH || pos.x > clipX + clipW) return;
-
 	auto action = new ActionText(std::string(text),(Font*)hFont);
 	action->color = (color.red << 16) | (color.green << 8) | (color.blue);
-	action->pageIndex = (long)pos.y / pdf->viewHeight;
+	action->pageIndex = (long)(pos.y+font->size) / pdf->viewHeight;
 	action->x = pdf->edge + pos.x;
 	auto y = pos.y - pdf->viewHeight * action->pageIndex;
 	action->y = pdf->edge + (pdf->viewHeight - y) - font->size;
@@ -109,10 +109,11 @@ void DocumentContainer::draw_list_marker(litehtml::uint_ptr hdc, const litehtml:
 	action->dotType = marker.marker_type;
 	action->size = marker.pos.height/2;
 	action->color = (marker.color.red << 16) | (marker.color.green << 8) | (marker.color.blue);
+	action->index = marker.index;
 	action->pageIndex = (long)marker.pos.y / pdf->viewHeight;
 	action->x = pdf->edge + marker.pos.x;
-	auto font = (Font*)marker.font;
-	action->y = pdf->height - pdf->edge - (marker.pos.y - action->pageIndex * pdf->viewHeight) + marker.pos.height - font->size * 2 / 3;
+	action->font = (Font*)marker.font;
+	action->y = pdf->height - pdf->edge - (marker.pos.y - action->pageIndex * pdf->viewHeight) + marker.pos.height - action->font->size * 2 / 3;
 	pdf->actions.push_back(action);
 }
 
@@ -192,6 +193,89 @@ void DocumentContainer::draw_conic_gradient(litehtml::uint_ptr hdc, const liteht
 
 void DocumentContainer::draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root)
 {
+
+	if (draw_pos.y > clipY + clipH || draw_pos.x > clipX + clipW) return;
+	auto x = pdf->edge + draw_pos.x;
+	if (x < clipX && clipX != INT_MAX) x = clipX;
+	auto ySrc = draw_pos.y;
+	if (ySrc < clipY && clipY != INT_MAX) ySrc = clipY;
+	auto hSrc = draw_pos.height;
+	if (hSrc > clipH && clipH != INT_MAX) hSrc = clipH;
+	auto w = draw_pos.width;
+	if (w > clipW && clipW != INT_MAX) w = clipW;
+	auto pageIndex = (long)ySrc / pdf->viewHeight;
+	//unsigned long colorVal = (color.red << 16) | (color.green << 8) | (color.blue);
+
+
+	auto flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	if (!flag) {
+		auto top = new ActionBorder();
+		top->pageIndex = pageIndex;
+		top->color = (borders.top.color.red << 16) | (borders.top.color.green << 8) | (borders.top.color.blue);
+		top->x = x;
+		top->y = pdf->edge + (pdf->viewHeight - ySrc);
+		top->x2 = x + w;
+		top->y2 = top->y;
+		top->width = borders.top.width;
+		pdf->actions.push_back(top);
+
+		auto left = new ActionBorder();
+		left->pageIndex = pageIndex;
+		left->color = (borders.left.color.red << 16) | (borders.left.color.green << 8) | (borders.left.color.blue);
+		left->x = x;
+		left->y = top->y;
+		left->x2 = x;
+		left->y2 = top->y - hSrc;
+		left->width = borders.left.width;
+		pdf->actions.push_back(left);
+
+		auto right = new ActionBorder();
+		right->pageIndex = pageIndex;
+		right->color = (borders.right.color.red << 16) | (borders.right.color.green << 8) | (borders.right.color.blue);
+		right->x = top->x2;
+		right->y = top->y;
+		right->x2 = top->x2;
+		right->y2 = top->y - hSrc;
+		right->width = borders.right.width;
+		pdf->actions.push_back(right);
+
+
+		auto bottom = new ActionBorder();
+		bottom->pageIndex = pageIndex;
+		bottom->color = (borders.bottom.color.red << 16) | (borders.bottom.color.green << 8) | (borders.bottom.color.blue);
+		bottom->x = x;
+		bottom->y = top->y - hSrc;
+		bottom->x2 = x + w;
+		bottom->y2 = bottom->y;
+		bottom->width = borders.bottom.width;
+		pdf->actions.push_back(bottom);
+
+		return;
+	}
+
+	//while (flag) {
+	//	auto action = new ActionBorder();
+	//	action->pageIndex = pageIndex;
+	//	action->color = colorVal;
+	//	action->w = w;
+	//	action->x = x;
+	//	action->h = (pageIndex + 1) * pdf->viewHeight - ySrc;
+	//	action->y = pdf->edge;
+	//	pdf->actions.push_back(action);
+	//	hSrc = hSrc - action->h;
+	//	ySrc = ySrc + action->h;
+	//	pageIndex = (long)ySrc / pdf->viewHeight;
+	//	flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	//}
+	//auto action = new ActionBorder();
+	//action->pageIndex = pageIndex;
+	//action->color = colorVal;
+	//action->w = w;
+	//action->x = x;
+	//action->h = hSrc;
+	//action->y = pdf->edge + (pdf->viewHeight - hSrc);
+	//pdf->actions.push_back(action);
+
 }
 
 void DocumentContainer::set_caption(const char* caption)
