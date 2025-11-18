@@ -19,8 +19,7 @@ class PDF
 public:
 	PDF();
 	~PDF();
-	void start();
-	void finish();
+	void start(const std::string& htmlPath);
 public:
 	/// <summary>
 	/// A4 纸张尺寸，宽度：595 点 ≈ 210 mm，
@@ -39,7 +38,6 @@ public:
 
 	int viewHeight{ height - edge * 2 };
 
-	float clipX, clipY, clipW, clipH;
 	PDFWriter pdfWriter;
 	std::vector<Action*> actions;
 private:

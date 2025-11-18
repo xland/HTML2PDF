@@ -44,7 +44,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="demo2.html" />
     <None Include="demo1.html" />
     <None Include="README.md" />
     <None Include="LICENSE" />
@@ -79,5 +78,8 @@
     <ClInclude Include="ActionListDot.h">
       <Filter>头文件</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="index.html" />
   </ItemGroup>
 </Project>

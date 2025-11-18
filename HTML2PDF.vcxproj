@@ -155,7 +155,7 @@
   <ItemGroup>
     <None Include=".gitignore" />
     <None Include="demo1.html" />
-    <None Include="demo2.html" />
+    <CopyFileToFolders Include="index.html" />
     <None Include="demo3.html" />
     <None Include="LICENSE" />
     <None Include="README.md" />

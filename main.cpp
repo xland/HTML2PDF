@@ -1,39 +1,42 @@
 ﻿#include <iostream>
-#include <sstream>
-#include <fstream>
+#include <chrono>
 #include <string>
-#include <litehtml/document.h>
 #include <Windows.h>
-#include "DocumentContainer.h"
 #include "PDF.h"
 
+std::string wstringToString(const std::wstring& wstr)
+{
+    LPCWSTR pwszSrc = wstr.c_str();
+    int nLen = WideCharToMultiByte(CP_ACP, 0, pwszSrc, -1, NULL, 0, NULL, NULL);
+    if (nLen == 0) return(std::string(""));
 
+    char* pszDst = new char[nLen];
+    if (!pszDst) return(std::string(""));
+
+    WideCharToMultiByte(CP_ACP, 0, pwszSrc, -1, pszDst, nLen, NULL, NULL);
+    std::string str(pszDst);
+    delete[] pszDst;
+    pszDst = NULL;
+    return(str);
+}
 
 int wmain(int argc, wchar_t* argv[])
 {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     std::wcout.imbue(std::locale("zh_CN.UTF-8"));
-    std::wcout << L"Unicode控制台程序" << std::endl;
-    for (int i = 0; i < argc; i++)
-    {
-        std::wcout << L"参数 " << i << L": " << argv[i] << std::endl;
+    std::wcout << L"请不要再PowerShell下运行本程序" << std::endl;
+    if (argc < 2) {
+        std::wcout << L"请输入要处理的HTML文件路径，支持相对目录" << std::endl;
     }
+    std::wstring htmlPath{ argv[1] };
+    auto pathStr = wstringToString(htmlPath);
 
-	auto pdf = std::make_unique<PDF>();
-	pdf->start();
-	pdf->finish();
-
-    //794 96dpi
-    //1240 150dpi
-    //2480 300dpi
-    //int best_width = doc->render(1240);
-    //doc->render(best_width);
-    //doc->render(1240);
-    //HelloWorld("allen.pdf");
-
-
-    std::wstring str;
-    std::wcin >> str;
+    auto pdf = std::make_unique<PDF>();
+    auto start = std::chrono::high_resolution_clock::now();
+	pdf->start(pathStr);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duration = end - start;
+    std::wcout << L"程序运行时间: " << duration.count() << L" 毫秒" << std::endl;
     return 0;
 }

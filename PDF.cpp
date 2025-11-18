@@ -1,23 +1,28 @@
 ﻿#include "PDF.h"
 #include "DocumentContainer.h"
 #include <iostream>
+#include <sstream>
+#include <fstream>
+#include <format>
+
+#include <litehtml/document.h>
 #include "Action.h"
 #include "Helper.h"
 
 
 PDF::PDF()
 {
-	pdfWriter.StartPDF("allen.pdf", ePDFVersion13);
+	pdfWriter.StartPDF("out.pdf", ePDFVersion13);
 }
 
 PDF::~PDF()
 {
 }
 
-void PDF::start()
+void PDF::start(const std::string& htmlPath)
 {
 	std::stringstream ss{};
-	std::ifstream("demo2.html", std::ios::binary) >> ss.rdbuf();
+	std::ifstream(htmlPath, std::ios::binary) >> ss.rdbuf();
 	auto html = ss.str();
 	auto docContainer = new  DocumentContainer(this);
 	auto doc = litehtml::document::createFromString(html, docContainer);
@@ -48,9 +53,10 @@ void PDF::start()
 		std::copy_if(actions.begin(), actions.end(), std::back_inserter(temp),
 			[&pageIndex](Action* a) {return a->pageIndex == pageIndex; });
 	}
-}
-
-void PDF::finish()
-{
+	for (size_t i = 0; i < actions.size(); i++)
+	{
+		delete actions[i];
+	}
+	actions.clear();
 	pdfWriter.EndPDF();
 }

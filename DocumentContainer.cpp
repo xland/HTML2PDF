@@ -96,13 +96,11 @@ litehtml::pixel_t DocumentContainer::get_default_font_size() const
 
 const char* DocumentContainer::get_default_font_name() const
 {
-    //return "SimHei";
 	return "msyh";
 }
 
 void DocumentContainer::draw_list_marker(litehtml::uint_ptr hdc, const litehtml::list_marker& marker)
 {
-	//pdf->drawListMarker(marker);
 	if (marker.marker_type == litehtml::list_style_type_none) return;
 	if (marker.pos.y > clipY + clipH || marker.pos.x > clipX + clipW) return;
 	auto action = new ActionListDot();
@@ -193,7 +191,6 @@ void DocumentContainer::draw_conic_gradient(litehtml::uint_ptr hdc, const liteht
 
 void DocumentContainer::draw_borders(litehtml::uint_ptr hdc, const litehtml::borders& borders, const litehtml::position& draw_pos, bool root)
 {
-
 	if (draw_pos.y > clipY + clipH || draw_pos.x > clipX + clipW) return;
 	auto x = pdf->edge + draw_pos.x;
 	if (x < clipX && clipX != INT_MAX) x = clipX;
@@ -204,77 +201,102 @@ void DocumentContainer::draw_borders(litehtml::uint_ptr hdc, const litehtml::bor
 	auto w = draw_pos.width;
 	if (w > clipW && clipW != INT_MAX) w = clipW;
 	auto pageIndex = (long)ySrc / pdf->viewHeight;
-	//unsigned long colorVal = (color.red << 16) | (color.green << 8) | (color.blue);
 
+	auto top = new ActionBorder();
+	top->pageIndex = pageIndex;
+	top->color = (borders.top.color.red << 16) | (borders.top.color.green << 8) | (borders.top.color.blue);
+	top->x = x - borders.left.width / 2;
+	top->y = pdf->edge + (pdf->viewHeight - ySrc) + borders.top.width / 2;
+	top->x2 = x + w + borders.left.width / 2;
+	top->y2 = top->y;
+	top->width = borders.top.width;
+	pdf->actions.push_back(top);
+	ActionBorder* left{nullptr};
+	ActionBorder* right{nullptr};
 
 	auto flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
 	if (!flag) {
-		auto top = new ActionBorder();
-		top->pageIndex = pageIndex;
-		top->color = (borders.top.color.red << 16) | (borders.top.color.green << 8) | (borders.top.color.blue);
-		top->x = x;
-		top->y = pdf->edge + (pdf->viewHeight - ySrc);
-		top->x2 = x + w;
-		top->y2 = top->y;
-		top->width = borders.top.width;
-		pdf->actions.push_back(top);
-
-		auto left = new ActionBorder();
+		left = new ActionBorder();
 		left->pageIndex = pageIndex;
 		left->color = (borders.left.color.red << 16) | (borders.left.color.green << 8) | (borders.left.color.blue);
-		left->x = x;
+		left->x = top->x;
 		left->y = top->y;
-		left->x2 = x;
-		left->y2 = top->y - hSrc;
+		left->x2 = top->x;
+		left->y2 = top->y - hSrc + borders.left.width / 2;
 		left->width = borders.left.width;
 		pdf->actions.push_back(left);
 
-		auto right = new ActionBorder();
+		right = new ActionBorder();
 		right->pageIndex = pageIndex;
 		right->color = (borders.right.color.red << 16) | (borders.right.color.green << 8) | (borders.right.color.blue);
 		right->x = top->x2;
 		right->y = top->y;
 		right->x2 = top->x2;
-		right->y2 = top->y - hSrc;
+		right->y2 = left->y2;
 		right->width = borders.right.width;
 		pdf->actions.push_back(right);
+	}
+	else {
+		while (flag) {
+			auto h = (pageIndex + 1) * pdf->viewHeight - ySrc;
+			left = new ActionBorder();
+			left->pageIndex = pageIndex;
+			left->color = (borders.left.color.red << 16) | (borders.left.color.green << 8) | (borders.left.color.blue);
+			left->x = top->x;
+			left->y = top->y;
+			left->x2 = top->x;
+			left->y2 = top->y - h;
+			left->width = borders.left.width;
+			pdf->actions.push_back(left);
 
+			right = new ActionBorder();
+			right->pageIndex = pageIndex;
+			right->color = (borders.right.color.red << 16) | (borders.right.color.green << 8) | (borders.right.color.blue);
+			right->x = top->x2;
+			right->y = top->y;
+			right->x2 = top->x2;
+			right->y2 = left->y2;
+			right->width = borders.right.width;
+			pdf->actions.push_back(right);
 
-		auto bottom = new ActionBorder();
-		bottom->pageIndex = pageIndex;
-		bottom->color = (borders.bottom.color.red << 16) | (borders.bottom.color.green << 8) | (borders.bottom.color.blue);
-		bottom->x = x;
-		bottom->y = top->y - hSrc;
-		bottom->x2 = x + w;
-		bottom->y2 = bottom->y;
-		bottom->width = borders.bottom.width;
-		pdf->actions.push_back(bottom);
+			hSrc = hSrc - h;
+			ySrc = ySrc + h;
+			pageIndex = (long)ySrc / pdf->viewHeight;
+			flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+		}
 
-		return;
+		left = new ActionBorder();
+		left->pageIndex = pageIndex;
+		left->color = (borders.left.color.red << 16) | (borders.left.color.green << 8) | (borders.left.color.blue);
+		left->x = top->x;
+		left->y = pdf->edge+pdf->viewHeight;
+		left->x2 = top->x;
+		left->y2 = left->y - hSrc + borders.left.width / 2;
+		left->width = borders.left.width;
+		pdf->actions.push_back(left);
+
+		right = new ActionBorder();
+		right->pageIndex = pageIndex;
+		right->color = (borders.right.color.red << 16) | (borders.right.color.green << 8) | (borders.right.color.blue);
+		right->x = top->x2;
+		right->y = left->y;
+		right->x2 = top->x2;
+		right->y2 = left->y2;
+		right->width = borders.right.width;
+		pdf->actions.push_back(right);
 	}
 
-	//while (flag) {
-	//	auto action = new ActionBorder();
-	//	action->pageIndex = pageIndex;
-	//	action->color = colorVal;
-	//	action->w = w;
-	//	action->x = x;
-	//	action->h = (pageIndex + 1) * pdf->viewHeight - ySrc;
-	//	action->y = pdf->edge;
-	//	pdf->actions.push_back(action);
-	//	hSrc = hSrc - action->h;
-	//	ySrc = ySrc + action->h;
-	//	pageIndex = (long)ySrc / pdf->viewHeight;
-	//	flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
-	//}
-	//auto action = new ActionBorder();
-	//action->pageIndex = pageIndex;
-	//action->color = colorVal;
-	//action->w = w;
-	//action->x = x;
-	//action->h = hSrc;
-	//action->y = pdf->edge + (pdf->viewHeight - hSrc);
-	//pdf->actions.push_back(action);
+	
+	auto bottom = new ActionBorder();
+	bottom->pageIndex = pageIndex;
+	bottom->color = (borders.bottom.color.red << 16) | (borders.bottom.color.green << 8) | (borders.bottom.color.blue);
+	bottom->x = top->x;
+	bottom->y = left->y2;
+	bottom->x2 = top->x2;
+	bottom->y2 = left->y2;
+	bottom->width = borders.bottom.width;
+
+	pdf->actions.push_back(bottom);
 
 }
 

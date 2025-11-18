@@ -1,6 +1,6 @@
 # HTML2PDF
 
-![](./Doc/screenshot.png)
+[测试文件](./Doc/screenshot.png)
 
 ```html
 <!DOCTYPE html>
