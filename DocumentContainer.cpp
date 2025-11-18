@@ -1,13 +1,20 @@
 ﻿#include <format>
 #include "Helper.h"
 #include "DocumentContainer.h"
+#include "PDFWriter.h"
 #include "PDF.h"
 #include "Font.h"
+#include "PDFFormXObject.h"
+#include "PDFImageXObject.h"
+#include "InputFile.h"
+#include "PNGImageHandler.h"
+#include "JPEGImageParser.h"
 
 #include "ActionText.h"
 #include "ActionBg.h"
 #include "ActionListDot.h"
 #include "ActionBorder.h"
+#include "ActionImg.h"
 
 DocumentContainer::DocumentContainer(PDF* pdf) :pdf{pdf}
 {
@@ -121,10 +128,30 @@ void DocumentContainer::load_image(const char* src, const char* baseurl, bool re
 
 void DocumentContainer::get_image_size(const char* src, const char* baseurl, litehtml::size& sz)
 {
+	auto url = std::string{ src };
+	size_t pos = url.find("?");
+	auto imgPath = url.substr(0, pos);
+	auto img = pdf->pdfWriter.GetImageDimensions(imgPath);
+	sz.width = img.first/1.5;
+	sz.height = img.second/1.5;
 }
 
-void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const std::string& url, const std::string& base_url)
+void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const std::string& src, const std::string& base_url)
 {
+	auto url = std::string{ src };
+	size_t pos = url.find("?");
+	auto imgPath = url.substr(0, pos);
+
+	auto action = new ActionImg();
+	action->imgPath = imgPath;
+	action->x = pdf->edge + layer.border_box.x;
+	action->w = layer.border_box.width;
+	action->h = layer.border_box.height;
+	action->pageIndex = (long)layer.border_box.y / pdf->viewHeight;
+	auto y = layer.border_box.y - pdf->viewHeight * action->pageIndex;
+	action->y = pdf->edge + (pdf->viewHeight - y) - action->h;
+	action->pdf = pdf;
+	pdf->actions.push_back(action);
 }
 
 void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::web_color& color)
@@ -148,7 +175,7 @@ void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const litehtml::
 		action->w = w;
 		action->x = x;
 		action->h = hSrc;
-		action->y = pdf->edge + (pdf->viewHeight - ySrc - hSrc);
+		action->y = pdf->edge + (pdf->viewHeight - (ySrc-pageIndex * pdf->viewHeight) - hSrc);
 		pdf->actions.push_back(action);
 		return;
 	}

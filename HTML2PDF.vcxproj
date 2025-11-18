@@ -145,6 +145,7 @@
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="ActionBg.cpp" />
     <ClCompile Include="ActionBorder.cpp" />
+    <ClCompile Include="ActionImg.cpp" />
     <ClCompile Include="ActionListDot.cpp" />
     <ClCompile Include="ActionText.cpp" />
     <ClCompile Include="DocumentContainer.cpp" />
@@ -164,12 +165,19 @@
     <ClInclude Include="Action.h" />
     <ClInclude Include="ActionBg.h" />
     <ClInclude Include="ActionBorder.h" />
+    <ClInclude Include="ActionImg.h" />
     <ClInclude Include="ActionListDot.h" />
     <ClInclude Include="ActionText.h" />
     <ClInclude Include="DocumentContainer.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="PDF.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="img.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="img2.jpeg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

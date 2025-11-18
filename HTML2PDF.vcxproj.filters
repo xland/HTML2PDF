@@ -42,6 +42,9 @@
     <ClCompile Include="ActionListDot.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ActionImg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="demo1.html" />
@@ -78,8 +81,17 @@
     <ClInclude Include="ActionListDot.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ActionImg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="index.html" />
+    <CopyFileToFolders Include="img.png">
+      <Filter>资源文件</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="img2.jpeg">
+      <Filter>资源文件</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
