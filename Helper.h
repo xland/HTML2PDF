@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#ifdef DEBUG
 #define LOG(...) \
     do { \
         std::cout << "[DEBUG] " << __FILE__ << ":" << __LINE__ << " (" << __FUNCTION__ << ") - "; \
@@ -13,4 +12,3 @@ template<typename... Args>
 void log_helper(const Args&... args) {
     (std::cout << ... << args);  // C++17 折叠表达式
 }
-#endif

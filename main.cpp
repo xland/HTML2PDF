@@ -25,7 +25,6 @@ int wmain(int argc, wchar_t* argv[])
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     std::wcout.imbue(std::locale("zh_CN.UTF-8"));
-    std::wcout << L"请不要再PowerShell下运行本程序" << std::endl;
     if (argc < 2) {
         std::wcout << L"请输入要处理的HTML文件路径，支持相对目录" << std::endl;
     }

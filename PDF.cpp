@@ -13,6 +13,7 @@
 
 PDF::PDF()
 {
+	//https://www.princexml.com/
 	dpi = GetDpiForSystem() / 96.0;
 	pdfWriter.StartPDF("out.pdf", ePDFVersion13);
 }
