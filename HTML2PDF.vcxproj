@@ -121,6 +121,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\sdk\litehtml\build\$(Configuration)\litehtml.lib;D:\sdk\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\debug\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/debug/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -140,6 +143,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>crypt32.lib;ws2_32.lib;bcrypt.lib;advapi32.lib;D:\sdk\litehtml\build\$(Configuration)\litehtml.lib;D:\sdk\litehtml\build\src\gumbo\$(Configuration)\gumbo.lib;D:\sdk\PDF-Writer\build\PDFWriter\$(Configuration)\PDFWriter.lib;D:\sdk\PDF-Writer\build\FreeType\$(Configuration)\FreeType.lib;D:\sdk\PDF-Writer\build\LibJpeg\$(Configuration)\LibJpeg.lib;D:\sdk\PDF-Writer\build\LibPng\$(Configuration)\LibPng.lib;D:\sdk\PDF-Writer\build\LibTiff\$(Configuration)\LibTiff.lib;D:\sdk\PDF-Writer\build\Zlib\$(Configuration)\Zlib.lib;D:\tool\vcpkg\packages\openssl_x64-windows-static\lib\libssl.lib;D:/tool/vcpkg/packages/openssl_x64-windows-static/lib/libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Action.cpp" />

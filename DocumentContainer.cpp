@@ -132,26 +132,66 @@ void DocumentContainer::get_image_size(const char* src, const char* baseurl, lit
 	size_t pos = url.find("?");
 	auto imgPath = url.substr(0, pos);
 	auto img = pdf->pdfWriter.GetImageDimensions(imgPath);
-	sz.width = img.first/1.5;
-	sz.height = img.second/1.5;
+	sz.width = img.first/pdf->dpi;
+	sz.height = img.second/pdf->dpi;
 }
 
 void DocumentContainer::draw_image(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const std::string& src, const std::string& base_url)
 {
+	if (layer.border_box.y > clipY + clipH || layer.border_box.x > clipX + clipW) return;
+
 	auto url = std::string{ src };
 	size_t pos = url.find("?");
 	auto imgPath = url.substr(0, pos);
-
+	
+	auto x = pdf->edge + layer.border_box.x;
+	auto ySrc = layer.border_box.y;
+	auto hSrc = layer.border_box.height;
+	auto w = layer.border_box.width;
+	auto pageIndex = (long)ySrc / pdf->viewHeight;
+	auto flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	if (!flag) {
+		auto action = new ActionImg();
+		action->imgPath = imgPath;
+		action->pageIndex = pageIndex;
+		action->w = w;
+		action->h = hSrc;
+		action->x = x;
+		action->y = pdf->edge + (pdf->viewHeight - (ySrc - pageIndex * pdf->viewHeight) - hSrc);
+		pdf->actions.push_back(action);
+		return;
+	}
+	while (flag) {
+		auto action = new ActionImg();
+		action->imgPath = imgPath;
+		action->pageIndex = pageIndex;
+		action->w = w;
+		action->h = layer.border_box.height;
+		action->wClip = w;
+		action->hClip = (pageIndex + 1) * pdf->viewHeight - ySrc;
+		action->x = x;
+		action->y = action->yClip - (hSrc - action->hClip);
+		action->xClip = x;
+		action->yClip = pdf->edge;
+		pdf->actions.push_back(action);
+		hSrc = hSrc - action->hClip;
+		ySrc = ySrc + action->hClip;
+		pageIndex = (long)ySrc / pdf->viewHeight;
+		flag = ySrc + hSrc > (pageIndex + 1) * pdf->viewHeight;
+	}
 	auto action = new ActionImg();
 	action->imgPath = imgPath;
-	action->x = pdf->edge + layer.border_box.x;
-	action->w = layer.border_box.width;
+	action->pageIndex = pageIndex;
+	action->w = w;
 	action->h = layer.border_box.height;
-	action->pageIndex = (long)layer.border_box.y / pdf->viewHeight;
-	auto y = layer.border_box.y - pdf->viewHeight * action->pageIndex;
-	action->y = pdf->edge + (pdf->viewHeight - y) - action->h;
-	action->pdf = pdf;
+	action->wClip = w;
+	action->hClip = hSrc;
+	action->x = x;
+	action->y = (pdf->viewHeight - hSrc);
+	action->xClip = x;
+	action->yClip = pdf->edge + (pdf->viewHeight - hSrc);
 	pdf->actions.push_back(action);
+
 }
 
 void DocumentContainer::draw_solid_fill(litehtml::uint_ptr hdc, const litehtml::background_layer& layer, const litehtml::web_color& color)

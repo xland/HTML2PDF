@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <format>
+#include <windows.h>
 
 #include <litehtml/document.h>
 #include "Action.h"
@@ -12,6 +13,7 @@
 
 PDF::PDF()
 {
+	dpi = GetDpiForSystem() / 96.0;
 	pdfWriter.StartPDF("out.pdf", ePDFVersion13);
 }
 

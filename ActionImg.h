@@ -9,7 +9,7 @@ public:
 	void paint(PageContentContext* ctx) override;
 public:
 	std::string imgPath;
-	float w, h;
+	float w, h, wClip{ -1 }, hClip{ -1 }, xClip{ -1 }, yClip{-1};
 	PDF* pdf;
 private:
 };

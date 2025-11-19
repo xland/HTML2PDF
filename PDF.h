@@ -40,6 +40,7 @@ public:
 
 	PDFWriter pdfWriter;
 	std::vector<Action*> actions;
+	float dpi{1.f};
 private:
 private:
 };

@@ -17,17 +17,18 @@ void ActionImg::paint(PageContentContext* ctx)
 		opt.transformationMethod = AbstractContentContext::eFit;
 		opt.boundingBoxWidth = w;
 		opt.boundingBoxHeight = h;
-		ctx->DrawImage(x, y, imgPath, opt);
-
-
-		// 在当前页裁剪图像（仅显示可见部分）
-		ctx->q(); // save
-		ctx->Rectangle(0, 0, pageWidth, pageHeight);
-		ctx->Clip(); // W n
-		ctx->DrawImage(x, y, imgPath, opt);
-		ctx->Q(); // restore
-
-
+		if (hClip < 0 && wClip < 0) {
+			ctx->DrawImage(x, y, imgPath, opt);
+			return;
+		}
+		else {
+			ctx->q(); // 保存图形状态
+			ctx->re(xClip, yClip, wClip, hClip); //设置裁剪区域 创建矩形路径：x, y, width, height
+			ctx->W(); // 设置裁剪路径（Clip）
+			ctx->n(); // 结束路径（不描边不填充）
+			ctx->DrawImage(x, y, imgPath, opt); // 左下角对齐裁剪区		
+			ctx->Q(); // 恢复图形状态（取消裁剪）
+		}
 	//}
 	//else {
 	//	PDFImageXObject* imageXObject = pdf->pdfWriter.CreateImageXObjectFromJPGFile(imgPath);
