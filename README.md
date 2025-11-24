@@ -13,7 +13,7 @@ Convert HTML to PDF without browser
 
 # Download
 
- [Releases (1.5MB)]()
+ [Releases](https://github.com/xland/HTML2PDF/releases)
 
 # Usage
 
